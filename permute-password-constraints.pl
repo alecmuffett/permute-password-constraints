@@ -1,27 +1,28 @@
 #!/usr/bin/perl
-@types = qw( u l d p );
+
+@charsets = qw( u l d p ); # CARE: DO NOT DOUBLE-COUNT OR OVERLAP THESE SETS
 
 sub filter_and_print {
     my @args = @_;
     my $foo = join('*', @args);
-    return unless $foo =~ /u/;
-    return unless $foo =~ /l/;
-    return unless $foo =~ /d/;
-    return unless $foo =~ /p/;
-    $foo =~ s/u/26/g;
-    $foo =~ s/l/26/g;
-    $foo =~ s/d/10/g;
-    $foo =~ s/p/32/g;
+    return unless $foo =~ /u/; # must contain one upper
+    return unless $foo =~ /l/; # ...lower
+    return unless $foo =~ /d/; # ...digit
+    return unless $foo =~ /p/; # ...punct/symbol
+    $foo =~ s/u/26/g; # there are 26 uppercase letters...
+    $foo =~ s/l/26/g; # etc...
+    $foo =~ s/d/10/g; # etc...
+    $foo =~ s/p/32/g; # etc...
     print "($foo)+"
 }
 
 sub permute {
     my ($depth, @args) = @_;
-    foreach my $t (@types) {
+    foreach my $charset (@charsets) {
         if ($depth) {
-            &permute(($depth - 1), @args, $t);
+            &permute(($depth - 1), @args, $charset);
         } else {
-            &filter_and_print(@args, $t);
+            &filter_and_print(@args, $charset);
         }
     }
 }
